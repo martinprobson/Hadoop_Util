@@ -13,14 +13,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.MiniDFSCluster;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.apache.hadoop.io.IOUtils;
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.Writable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -70,23 +74,40 @@ public class TestHDFSUtil {
 		return cfg;
 	}
 	
+	/**
+	 * Write a new SequenceFile from a List of key,value Pairs.
+	 * @param conf
+	 * @param filePath
+	 * @param content
+	 * @throws IOException
+	 */
+	public static void writeSeqFile(Configuration conf, 
+			Path filePath, 
+			List<Pair<Writable,Writable>> content) throws IOException {
+
+		SequenceFile.Writer writer = null;
+		try {
+			for( Pair<Writable,Writable> entry: content) {
+				Writable key = entry.getKey();
+				Writable value = entry.getValue();
+				if (writer == null) {
+					writer = SequenceFile.createWriter(conf,SequenceFile.Writer.file(filePath),
+							SequenceFile.Writer.keyClass(key.getClass()),
+							SequenceFile.Writer.valueClass(value.getClass()));
+				}
+				writer.append(key,value);
+			}
+		} finally {
+			IOUtils.closeStream(writer);
+		}
+	}
+	
 	public TestHDFSUtil(Configuration conf) throws IOException {
 		this.conf = conf;
 		this.fs = FileSystem.get(conf);
 		log.info("Testing FileUtil with FileSystem set to: " + fs.getUri() );
 	}
 	
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		log.info("In setupBeforeClass");
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		log.info("In tearDownAfterClass");
-		
-	}
 
 	@Test
 	public void testPathExists() throws IOException {
@@ -112,6 +133,18 @@ public class TestHDFSUtil {
 		HDFSUtil.deletePath(conf, notExists);
 		assertFalse(HDFSUtil.pathExists(conf, notExists));
 	}
+
+	@Test
+	public void testReadSeqFile() throws IOException {
+		Path testFile = new Path("/tmp/testReadSeqFile");
+		List<Pair<Writable,Writable>> expected = new ArrayList<>();
+		for (int i=0; i < 10; i++) 
+			expected.add(new ImmutablePair<>(new Text("key-" + i),new Text("value-" + i)));
+		writeSeqFile(conf,testFile,expected);
+		List<Pair<Writable,Writable>> actual = HDFSUtil.readSeqFile(conf,testFile);
+		assertTrue(actual.equals(expected));
+	}
+
 
 	@Test
 	public void testReadFile() throws IOException {
@@ -148,5 +181,6 @@ public class TestHDFSUtil {
 		expected.add("test-content");
 		assertTrue(content.equals(expected));
 	}
+
 	
 }

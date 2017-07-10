@@ -12,12 +12,19 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IOUtils;
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableUtils;
+import org.apache.hadoop.util.ReflectionUtils;
 
 /**
  * Utility methods for dealing with HDFS (and local) filesystems.
@@ -64,6 +71,36 @@ public class HDFSUtil {
 			LOG.error("Error deletePath() " + name,e);
 			System.exit(2);
 		}
+	}
+	
+	//@TODO Re-factor
+	/**
+	 * Read a Hadoop SequenceFile.
+	 * @param conf - Hadoop confiuration referencing file system to use.
+	 * @param path - file to be read (Path)
+	 * @return List of Writable Pairs containing the key/value contents of the file.
+	 * @throws IOException 
+	 */
+	public static List<Pair<Writable,Writable>> readSeqFile(Configuration conf, Path fileName) throws IOException {
+
+		List<Pair<Writable,Writable>> lines = new ArrayList<>();
+		
+		SequenceFile.Reader reader = null;
+		try {
+			reader = new SequenceFile.Reader(conf,SequenceFile.Reader.file(fileName));
+			Writable key = (Writable) ReflectionUtils.newInstance(reader.getKeyClass(),conf);
+			Writable value = (Writable) ReflectionUtils.newInstance(reader.getValueClass(),conf);
+			while (reader.next(key,value)) {
+				Pair<Writable,Writable> line =  new ImmutablePair<>(WritableUtils.clone(key, conf),
+																     WritableUtils.clone(value, conf));
+				lines.add(line);
+			}
+			
+		} finally {
+			IOUtils.closeStream(reader);
+		}
+		
+		return lines;
 	}
 	
 	//@TODO Re-factor
