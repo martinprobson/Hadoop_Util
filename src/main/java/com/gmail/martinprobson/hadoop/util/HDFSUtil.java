@@ -103,6 +103,7 @@ public class HDFSUtil {
 		return lines;
 	}
 	
+	
 	//@TODO Re-factor
 	/**
 	 * Read a file.
@@ -126,6 +127,7 @@ public class HDFSUtil {
 		return(lines.toString());
 		
 	}
+	
 	
 	//@TODO Re-factor
 	/**
