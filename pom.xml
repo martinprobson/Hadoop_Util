@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.martinprobson</groupId>
   <artifactId>Hadoop_Util</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <description>Useful HDFS and Hadoop utility methods</description>
 	<packaging>jar</packaging>
 	<properties>
