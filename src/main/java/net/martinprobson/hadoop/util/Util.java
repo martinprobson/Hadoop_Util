@@ -1,4 +1,4 @@
-package com.gmail.martinprobson.hadoop.util;
+package net.martinprobson.hadoop.util;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package com.gmail.martinprobson.hadoop.util;
+package net.martinprobson.hadoop.util;
 
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.FS_DEFAULT_NAME_KEY;
 import static org.junit.Assert.assertFalse;
@@ -30,6 +30,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import net.martinprobson.hadoop.util.HDFSUtil;
+
 
 @RunWith(Parameterized.class)
 public class TestHDFSUtil {
@@ -54,7 +56,7 @@ public class TestHDFSUtil {
 		localConf = new Configuration();
 		hdfsConf  = new Configuration();
 		if (System.getProperty("test.build.data") == null)
-			System.setProperty("test.build.data", "/tmp");
+			System.setProperty("test.build.data", System.getProperty("java.io.tmpdir"));
 		try {
 			new MiniDFSCluster.Builder(hdfsConf).build();
 			log.info("After local FS_DEFAULT_NAME_KEY = " + localConf.get(FS_DEFAULT_NAME_KEY));

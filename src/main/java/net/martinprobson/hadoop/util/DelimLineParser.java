@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.gmail.martinprobson.hadoop.util;
+package net.martinprobson.hadoop.util;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;

@@ -3,7 +3,9 @@
 *.css
 *.log*
 *.jar
+*.iml
 *.jardesc
+/.idea
 /.settings
 package-list
 hadoop.err

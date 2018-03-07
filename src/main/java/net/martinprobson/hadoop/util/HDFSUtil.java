@@ -1,4 +1,4 @@
-package com.gmail.martinprobson.hadoop.util;
+package net.martinprobson.hadoop.util;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -59,7 +59,7 @@ public class HDFSUtil {
 
 	/**
 	 * Delete a path exists in the file system given by Configuration.
-	 * @param conf - Hadoop confiuration referencing file system to use.
+	 * @param conf - Hadoop configuration referencing file system to use.
 	 * @param name - Path name to delete.
 	 * @return True if Path exists, False otherwise.
 	 */
@@ -76,7 +76,7 @@ public class HDFSUtil {
 	//@TODO Re-factor
 	/**
 	 * Read a Hadoop SequenceFile.
-	 * @param conf - Hadoop confiuration referencing file system to use.
+	 * @param conf - Hadoop configuration referencing file system to use.
 	 * @param path - file to be read (Path)
 	 * @return List of Writable Pairs containing the key/value contents of the file.
 	 * @throws IOException 
@@ -107,7 +107,7 @@ public class HDFSUtil {
 	//@TODO Re-factor
 	/**
 	 * Read a file.
-	 * @param conf - Hadoop confiuration referencing file system to use.
+	 * @param conf - Hadoop configuration referencing file system to use.
 	 * @param path - file to be read (Path)
 	 * @return String representation of file.
 	 */
@@ -132,7 +132,7 @@ public class HDFSUtil {
 	//@TODO Re-factor
 	/**
 	 * Read a file.
-	 * @param conf - Hadoop confiuration referencing file system to use.
+	 * @param conf - Hadoop configuration referencing file system to use.
 	 * @param path - file to be read (Path)
 	 * @return List<String> collection of lines from file.
 	 */

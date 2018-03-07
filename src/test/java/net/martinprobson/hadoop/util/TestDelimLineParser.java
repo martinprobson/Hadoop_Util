@@ -1,4 +1,4 @@
-package com.gmail.martinprobson.hadoop.util;
+package net.martinprobson.hadoop.util;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
@@ -15,6 +15,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import net.martinprobson.hadoop.util.DelimLineParser;
 
 
 public class TestDelimLineParser {
